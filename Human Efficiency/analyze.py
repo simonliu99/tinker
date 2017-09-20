@@ -1,14 +1,20 @@
 from openpyxl import *
 
+### This program finds the exact volume of air ventilation through the BIOPAC.###
+
+# Given a row, this function will return the time stamp associated with the datum.
 def time(row):
     return (row-2)/100
 
+# Load raw data spreadsheet, organized by a title row and then following with data.
 raw = load_workbook(filename = 'data.xlsx')
 sheet = raw['Sheet1']
 
+# Create list of columns to iterate through.
 columns = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R']
 dicts = []
 
+# Collects all local extrema in data with the corresponding time stamp.
 for i in columns:
     rowFirst = 2
     dictall = {}
@@ -28,6 +34,7 @@ for i in columns:
     dicts.append(dictall)
     raw.close()
 
+# Writes all local extrema for each column into a separate spreadsheet.
 araw = Workbook()
 ws = araw.active
 ws.title = "Sheet1"
@@ -42,9 +49,11 @@ for i in range(0,18):
         prev = k
 araw.save(filename = 'AnalyzeRaw.xlsx')
 
+# ORIGINALLY TWO FILES: Reads the raw analyzed extremas and sums only the positive increases in air ventilation.
 araw = load_workbook(filename = 'AnalyzeRaw.xlsx')
 ws = araw['Sheet1']
 
+# Calculates and prints out air ventilation in the first 15, 30, 45 seconds, and the total volume.
 for i in range(0,18):
     rowA, air15, air30, air45,airtotal = 2, 0, 0, 0, 0
     while ws.cell(row=rowA,column=(4*i)+4).value:
@@ -56,7 +65,10 @@ for i in range(0,18):
             air45+=ws.cell(row=rowA,column=(4*i)+4).value
         rowA+=1
     airtotal = air15+air30+air45
+
     print(air15)
     print(air30)
     print(air45)
     print(airtotal)
+
+# The volumes can then be copied to a spreadsheet and the averages calculated to use in determining work and efficiency.
