@@ -59,17 +59,17 @@ def dirFix(mD):
     for i in dirList:
         dirSplit = i.split()
         checked = False
-        while checked != True:
-            if dirSplit[-1][0] == '[' and dirSplit[-1][-1] == ']':
-                print(dirSplit[-1]),
-                dirSplit.pop()
-                print(' '.join(dirSplit))
-            else:
+        for j,k in enumerate(dirSplit):
+            if k[0] == '(' and k[-1] == ')':
+                del dirSplit[j+1:]
                 checked = True
-        try:
-            os.rename(i,' '.join(dirSplit))
-        except:
-            print('Could not rename:', i)
+        if checked != True:
+            print('ERROR:',i)
+        else:
+            try:
+                os.rename(i,' '.join(dirSplit))
+            except:
+                print('ERROR: Could not rename', i)
     os.chdir(mD)
     input("Press Enter to continue...")
         
