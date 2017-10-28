@@ -25,7 +25,7 @@ def makeNewFilm(curDir, dirName):
     f.year = int(dNs.pop()[1:5])
     f.name = ' '.join(dNs)
     f.broke = (os.listdir(os.path.join(curDir, dirName)) == [])
-    print(f.broke)
+    #print(f.broke)
     return f
 
 def makeNewShow(dirName, seasons):
