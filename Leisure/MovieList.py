@@ -24,8 +24,7 @@ def makeNewFilm(curDir, dirName):
     f = film()
     f.year = int(dNs.pop()[1:5])
     f.name = ' '.join(dNs)
-    f.broke = (os.listdir(os.path.join(curDir, dirName)) == [])
-    #print(f.broke)
+    f.status = dirStatus(curDir, dirName)
     return f
 
 def makeNewShow(dirName, seasons):
@@ -34,16 +33,22 @@ def makeNewShow(dirName, seasons):
     s.seasons = seasons
     return s
 
+def dirStatus(curDir, dirName):
+    if os.listdir(os.path.join(curDir, dirName)) == []:
+        return 'red'
+    for dirpath, dirnames, filenames in os.walk(os.path.join(curDir, dirName)):
+        for filename in filenames:
+            if not filename.endswith('mp4') and not filename.endswith('mkv') and not filename.endswith('srt') and not filename.endswith('_Sub') and not filename.endswith('avi') and not filename.endswith('idx') and not filename.endswith('_Subs') and not filename.endswith('sub') and not filename.endswith('_Subtitles') and not filename.endswith('smi'):
+                return 'yellow'
+    return ''
+
 def writeXLSX(fL, sL):
     book = xlsxwriter.Workbook('Entertainment.xlsx')
 
     films = book.add_worksheet('Films')
     maxLen = 0
     for i, f in enumerate(fL):
-        if f.broke:
-            form, formC = formats(book, 'red')
-        else:
-            form, formC = formats(book, '')
+        form, formC = formats(book, f.status)
         films.write(i, 0, f.name, form)
         films.write(i, 1, f.year, formC)
         maxLen = len(f.name) if len(f.name) > maxLen else maxLen
@@ -90,6 +95,7 @@ def films(mD):
     fList = []
     for f in dirList:
         fList.append(makeNewFilm(curDir, f))
+    fList.sort(key=lambda f:f.name)
     return fList
 
 def shows(mD):
@@ -100,6 +106,7 @@ def shows(mD):
         curSub = os.path.join(curDir, s)
         subList = [u for u in os.listdir(curSub) if os.path.isdir(os.path.join(curSub, u))]
         sList.append(makeNewShow(s, subList))
+    sList.sort(key=lambda s:s.name)
     return sList
 
 def main():
@@ -111,6 +118,6 @@ def main():
     sL = shows(mainDir)
     writeXLSX(fL, sL)
     print(len(fL), 'movies,', len(sL), 'shows')
-    input("Press Enter to exit...")
+    #input("Press Enter to exit...")
 
 main()
