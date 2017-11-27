@@ -48,18 +48,16 @@ t = linspace(0,8,1000000);
 C_b = computeC_b(80, 25, 1.6, 0.4, t);
 figure;plot(t,C_b);
 title('C_b from t=0 to t=8')
-xlabel('Time (hours)')
+xlabel('Time (Hours)')
 ylabel('Concentration (mg/L)')
-% print('3b','-dpng')
 
 % 3c
 t = linspace(0,12,1000000);
 C_b2 = computeC_b(80, 25, 1.6, 0.4, t);
 figure;plot(t,C_b2);
 title('C_b from t=0 to t=12')
-xlabel('Time (hours)')
+xlabel('Time (Hours)')
 ylabel('Concentration (mg/L)')
-% print('3c','-dpng')
 
 % 3d
 M = find(max(C_b2) == C_b2);
@@ -75,9 +73,8 @@ for i = 1:length(C_b3)
 end
 figure;plot(t,C_b3);
 title('Controlled C_b from t=0 to t=12')
-xlabel('Time (hours)')
+xlabel('Time (Hours)')
 ylabel('Concentration (mg/L)')
-% print('3e','-dpng')
 
 % Question 4
 bmt = @(x1,x2) [sqrt(-2*log(x1))*cos(2*pi*x2),sqrt(-2*log(x1))*sin(2*pi*x2)];
@@ -88,7 +85,7 @@ hist(params(:,1:1));
 title('z_1 Distribution')
 figure;
 hist(params(:,2:2));
-title('z_2 Distribution')t
+title('z_2 Distribution')
 figure;
 hist(params(:,3:3));
 title('rand Distribution')
