@@ -1,5 +1,6 @@
 import os
 import xlsxwriter
+from shutil import copyfile
 
 class film(object):
     name = ''
@@ -61,7 +62,8 @@ def writeXLSX(fL, sL):
     films = book.add_worksheet('Films')
     maxLen = 0
     for i, f in enumerate(fL):
-        form, formC = formats(book, f.subtitles, f.status)
+        #form, formC = formats(book, f.subtitles, f.status)
+        form, formC = formats(book, True, True)
         films.write(i, 0, f.name, form)
         films.write(i, 1, f.year, formC)
         films.write(i, 2, str(f.subtitles), formC)
@@ -122,16 +124,18 @@ def shows(mD):
         subList = [u for u in os.listdir(curSub) if os.path.isdir(os.path.join(curSub, u))]
         sList.append(makeNewShow(curDir, s, subList))
     sList.sort(key=lambda s:s.name)
-    return sList
+    return sList    
 
 def main():
-    os.chdir('/Volumes/Alpha/Leisure/Entertainment')
+    os.chdir('/Volumes/Syzygy/Leisure/Entertainment')
+##    os.chdir('/Users/michaelblob/Movies')
     mainDir = os.getcwd()
     print(mainDir)
     dirFix(mainDir)
     fL = films(mainDir)
     sL = shows(mainDir)
     writeXLSX(fL, sL)
+    copyfile("/Volumes/Syzygy/Leisure/Entertainment/Entertainment.xlsx", "/Users/michaelblob/Documents/JHU/Entertainment.xlsx")
     print(len(fL), 'movies,', len(sL), 'shows')
     #input("Press Enter to exit...")
 
