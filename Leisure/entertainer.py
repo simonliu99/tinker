@@ -69,7 +69,7 @@ def writeXLSX(fL, sL):
 
     book.close()
 
-def dirFix:
+def dirFix():
     # curDir = os.path.join(mD, 'Films')
     curDir = os.getcwd()
     holdDir = os.path.join(curDir, 'Holding')
@@ -97,7 +97,7 @@ def dirFix:
                 print('ERROR: Could not rename', i)
     os.chdir(curDir)
 
-def films:
+def films():
     curDir = os.path.join(os.getcwd(), 'Films')
     dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
     fList = []
@@ -106,7 +106,7 @@ def films:
     fList.sort(key=lambda f:f.name)
     return fList
 
-def shows:
+def shows():
     curDir = os.path.join(os.getcwd(), 'Shows')
     dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
     sList = []
