@@ -1,23 +1,23 @@
 import os
-import xlsxwriter
+import sys
+import shutil
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 class film(object):
     name = ''
     year = 0
-    broke = False
+    # broke = False
 
 class show(object):
     name = ''
     seasons = []
 
-def formats(b, color):
-    font = b.add_format({'font_name': 'Courier', 'font_size': 12})
-    center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
-    if color == '':
-        return font, center
-    cFont = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
-    cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
-    return cFont, cFontC
+class seasons(object):
+	year = 0
+	episodes = 0
+
 
 def makeNewFilm(curDir, dirName):
     dNs = dirName.split()
@@ -69,28 +69,36 @@ def writeXLSX(fL, sL):
 
     book.close()
 
-def dirFix(mD):
-    curDir = os.path.join(mD, 'Films')
-    os.chdir(curDir)
+def dirFix:
+    # curDir = os.path.join(mD, 'Films')
+    curDir = os.getcwd()
+    holdDir = os.path.join(curDir, 'Holding')
+    filmDir = os.path.join(curDir, 'Films')
+    os.chdir(holdDir)
     dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
     for i in dirList:
         dirSplit = i.split()
         checked = False
         for j, k in enumerate(dirSplit):
-            if k[0] == '(' and k[-1] == ')' and k[1:-2] == int(k[1:-2]):
+            if k[0] == '(' and k[-1] == ')' and str.isdigit(k[1:-2]):
+            	clean = ' '.join(i.split()[:j + 1])
                 del dirSplit[j + 1:]
                 checked = True
         if not checked:
-            print('ERROR: Directory naming inconsistent', i)
+            print('ERROR: Inconsistent naming', i)
+        elif os.path.exists(os.path.join(filmDir, clean)):
+        	print('ERROR: Film already exists', i)
         else:
             try:
-                os.rename(i, ' '.join(dirSplit))
+            	print('SUCCESS', clean)
+                os.rename(i, clean)
+                shutil.move(clean, filmDir)
             except:
-                print('ERROR: Could not rename', ' '.join(dirSplit))
-    os.chdir(mD)
+                print('ERROR: Could not rename', i)
+    os.chdir(curDir)
 
-def films(mD):
-    curDir = os.path.join(mD, 'Films')
+def films:
+    curDir = os.path.join(os.getcwd(), 'Films')
     dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
     fList = []
     for f in dirList:
@@ -98,8 +106,8 @@ def films(mD):
     fList.sort(key=lambda f:f.name)
     return fList
 
-def shows(mD):
-    curDir = os.path.join(mD, 'Shows')
+def shows:
+    curDir = os.path.join(os.getcwd(), 'Shows')
     dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
     sList = []
     for s in dirList:
@@ -109,15 +117,39 @@ def shows(mD):
     sList.sort(key=lambda s:s.name)
     return sList
 
-def main():
-    os.chdir('/Volumes/Alpha/Entertainment')
-    mainDir = os.getcwd()
+
+
+
+
+def gsheets(fL, sL):
+	scope = ['https://spreadsheets.google.com/feeds',
+	         'https://www.googleapis.com/auth/drive']
+
+	credentials = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+
+	gc = gspread.authorize(credentials)
+
+	wks = gc.open("Entertainment").sheet1
+
+	# Extract and print all of the values
+	list_of_hashes = wks.get_all_records()
+	print(list_of_hashes)
+
+
+def main(argv):
+    # mainDir = os.getcwd()
+    mainDir = argv[0]
+    os.chdir(mainDir)
     print(mainDir)
-    dirFix(mainDir)
-    fL = films(mainDir)
-    sL = shows(mainDir)
-    writeXLSX(fL, sL)
-    print(len(fL), 'movies,', len(sL), 'shows')
+    dirFix()
+    # fL = films()
+    # sL = shows()
+    # writeXLSX(fL, sL)
+    # gsheets(fL, sL)
+    # print(len(fL), 'movies,', len(sL), 'shows')
     #input("Press Enter to exit...")
 
-main()
+if __name__ == "__main__":
+	main(sys.argv[1:])
+
+# main('/Volumes/Alpha/Entertainment')
