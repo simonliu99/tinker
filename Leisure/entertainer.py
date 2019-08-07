@@ -75,7 +75,7 @@ def dirFix():
 	holdDir = os.path.join(curDir, 'Holding')
 	filmDir = os.path.join(curDir, 'Films')
 	os.chdir(holdDir)
-	dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
+	dirList = [d for d in os.listdir(holdDir) if os.path.isdir(os.path.join(holdDir, d))]
 	for i in dirList:
 		dirSplit = i.split()
 		checked = False
