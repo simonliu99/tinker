@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import gspread
+import xlsxwriter
 from oauth2client.service_account import ServiceAccountCredentials
 
 
@@ -14,10 +15,14 @@ class show(object):
 	name = ''
 	seasons = []
 
-class seasons(object):
-	year = 0
-	episodes = 0
-
+def formats(b, color):
+    font = b.add_format({'font_name': 'Courier', 'font_size': 12})
+    center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
+    if color == '':
+        return font, center
+    cFont = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
+    cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
+    return cFont, cFontC
 
 def makeNewFilm(curDir, dirName):
 	dNs = dirName.split()
@@ -90,7 +95,7 @@ def dirFix():
 			print('ERROR: Film already exists', i)
 		else:
 			try:
-				print('SUCCESS', clean)
+				# print('SUCCESS', clean)
 				os.rename(i, clean)
 				shutil.move(clean, filmDir)
 			except:
@@ -117,10 +122,6 @@ def shows():
 	sList.sort(key=lambda s:s.name)
 	return sList
 
-
-
-
-
 def gsheets(fL, sL):
 	scope = ['https://spreadsheets.google.com/feeds',
 			 'https://www.googleapis.com/auth/drive']
@@ -135,19 +136,18 @@ def gsheets(fL, sL):
 	list_of_hashes = wks.get_all_records()
 	print(list_of_hashes)
 
-
 def main(argv):
 	# mainDir = os.getcwd()
 	mainDir = argv[0]
 	os.chdir(mainDir)
 	print(mainDir)
 	dirFix()
-	# fL = films()
-	# sL = shows()
-	# writeXLSX(fL, sL)
+	fL = films()
+	sL = shows()
+	writeXLSX(fL, sL)
 	# gsheets(fL, sL)
-	# print(len(fL), 'movies,', len(sL), 'shows')
-	#input("Press Enter to exit...")
+	print(len(fL), 'movies,', len(sL), 'shows')
+	# input("Press Enter to exit...")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
