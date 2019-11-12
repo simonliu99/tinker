@@ -134,7 +134,7 @@ def gsheets(mainDir, fL, sL):
 	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
 	name_range = wk.range('A1:A'+str(len(fL)))
 	year_range = wk.range('B1:B'+str(len(fL)))
-	for n in range(len(fL)):
+	for i in range(len(fL)):
 		name_range[i].value = fL[i].name
 		year_range[i].value = fL[i].year
 	wk.update_cells(name_range)
