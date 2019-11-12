@@ -132,10 +132,14 @@ def gsheets(mainDir, fL, sL):
 
 	sh = gc.open('Entertainment')
 	lst = sh.worksheets()
-	if 'Movies.temp' in lst:
+	try:
 		sh.del_worksheet(sh.worksheet('Movies.temp'))
-	if 'Shows.temp' in lst:
+	except:
+                pass
+	try:
 		sh.del_worksheet(sh.worksheet('Shows.temp'))
+	except:
+                pass
 
 	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
 	name_range = wk.range('A1:A'+str(len(fL)))
@@ -152,8 +156,7 @@ def gsheets(mainDir, fL, sL):
 	for n, i in enumerate(sL):
 		wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
-			wk.update_cell(n+1, m+2, 'S'+str(m+1)+'E'+str(j.episodes)+' ('+j.year+')')
-			print(n,m)
+			wk.update_cell(n+1, m+2, j)
 	sh.del_worksheet(sh.worksheet('Shows'))
 	wk.update_title(title='Shows')
 
@@ -172,4 +175,3 @@ def main(argv):
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
-##        print(sys.argv[1:])
