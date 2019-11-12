@@ -132,10 +132,13 @@ def gsheets(mainDir, fL, sL):
 
 	sh = gc.open('Entertainment')
 	wk = sh.add_worksheet(title='Movies.temp', rows=len(fL), cols=2)
-	for n, i in enumerate(fL):
-		wk.update_cell(n+1, 1, i.name)
-		wk.update_cell(n+1, 2, i.year)
-		print(n)
+	name_range = wk.range('A1:A'+str(len(fL)))
+	year_range = wk.range('B1:B'+str(len(fL)))
+	for n in range(len(fL)):
+		name_range[i].value = fL[i].name
+		year_range[i].value = fL[i].year
+	wk.update_cells(name_range)
+	wk.update_cells(year_range)
 	sh.del_worksheet(sh.worksheet('Movies'))
 	wk.update_title(title='Movies')
 
