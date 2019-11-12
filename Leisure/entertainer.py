@@ -146,10 +146,6 @@ def gsheets(fL, sL):
 	sh.del_worksheet(sh.worksheet('Shows'))
 	wk.update_title(title='Shows')
 
-	# Extract and print all of the values
-	# list_of_hashes = wks.get_all_records()
-	# print(list_of_hashes)
-
 def main(argv):
 	# mainDir = os.getcwd()
 	mainDir = argv[0]
@@ -165,7 +161,3 @@ def main(argv):
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
-
-# gsheets([0,1,2],['dab','yeet','ur mom'])
-
-# main('/Volumes/Alpha/Entertainment')
