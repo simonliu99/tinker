@@ -125,15 +125,29 @@ def gsheets(fL, sL):
 	scope = ['https://spreadsheets.google.com/feeds',
 			 'https://www.googleapis.com/auth/drive']
 
-	credentials = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+	credentials = ServiceAccountCredentials.from_json_keyfile_name('../../client_secret.json', scope)
 
 	gc = gspread.authorize(credentials)
 
-	wks = gc.open("Entertainment").sheet1
+	sh = gc.open('Entertainment')
+	wk = sh.add_worksheet(title='Movies.temp')
+	for n, i in enumerate(fL):
+		wk.update_cell(n+1, 1, i.name)
+		wk.update_cell(n+1, 2, i.year)
+	sh.del_worksheet(sh.worksheet('Movies'))
+	wk.update_title(title='Movies')
+
+	wk = sh.add_worksheet(title='Shows.temp')
+	for n, i in enumerate(sL):
+		wk.update_cell(n+1, 1, i.name)
+		for m, j in enumerate(i.seasons):
+			wk.update_cell(n+1, m+2, 'S'+str(m+1)+'E'+str(j.episodes)+' ('+j.year+')')
+	sh.del_worksheet(sh.worksheet('Shows'))
+	wk.update_title(title='Shows')
 
 	# Extract and print all of the values
-	list_of_hashes = wks.get_all_records()
-	print(list_of_hashes)
+	# list_of_hashes = wks.get_all_records()
+	# print(list_of_hashes)
 
 
 def main(argv):
@@ -142,14 +156,16 @@ def main(argv):
 	os.chdir(mainDir)
 	print(mainDir)
 	dirFix()
-	# fL = films()
-	# sL = shows()
-	# writeXLSX(fL, sL)
-	# gsheets(fL, sL)
-	# print(len(fL), 'movies,', len(sL), 'shows')
-	#input("Press Enter to exit...")
+	fL = films()
+	sL = shows()
+	writeXLSX(fL, sL)
+	gsheets(fL, sL)
+	print(len(fL), 'movies,', len(sL), 'shows')
+	input("Press Enter to exit...")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
+
+# gsheets([0,1,2],['dab','yeet','ur mom'])
 
 # main('/Volumes/Alpha/Entertainment')
