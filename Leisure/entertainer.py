@@ -131,7 +131,7 @@ def gsheets(mainDir, fL, sL):
 	gc = gspread.authorize(credentials)
 
 	sh = gc.open('Entertainment')
-	wk = sh.add_worksheet(title='Movies.temp', rows=len(fL), cols=2)
+	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
 	name_range = wk.range('A1:A'+str(len(fL)))
 	year_range = wk.range('B1:B'+str(len(fL)))
 	for n in range(len(fL)):
@@ -142,7 +142,7 @@ def gsheets(mainDir, fL, sL):
 	sh.del_worksheet(sh.worksheet('Movies'))
 	wk.update_title(title='Movies')
 
-	wk = sh.add_worksheet(title='Shows.temp', rows=len(sL), cols=10)
+	wk = sh.add_worksheet(title='Shows.temp', rows=1000, cols=26)
 	for n, i in enumerate(sL):
 		wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
