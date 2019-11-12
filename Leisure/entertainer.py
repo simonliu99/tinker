@@ -122,27 +122,29 @@ def shows():
 	sList.sort(key=lambda s:s.name)
 	return sList
 
-def gsheets(fL, sL):
+def gsheets(mainDir, fL, sL):
 	scope = ['https://spreadsheets.google.com/feeds',
 			 'https://www.googleapis.com/auth/drive']
 
-	credentials = ServiceAccountCredentials.from_json_keyfile_name('../../client_secret.json', scope)
+	credentials = ServiceAccountCredentials.from_json_keyfile_name(mainDir+'\client_secret.json', scope)
 
 	gc = gspread.authorize(credentials)
 
 	sh = gc.open('Entertainment')
-	wk = sh.add_worksheet(title='Movies.temp')
+	wk = sh.add_worksheet(title='Movies.temp', rows=len(fL), cols=2)
 	for n, i in enumerate(fL):
 		wk.update_cell(n+1, 1, i.name)
 		wk.update_cell(n+1, 2, i.year)
+		print(n)
 	sh.del_worksheet(sh.worksheet('Movies'))
 	wk.update_title(title='Movies')
 
-	wk = sh.add_worksheet(title='Shows.temp')
+	wk = sh.add_worksheet(title='Shows.temp', rows=len(sL), cols=10)
 	for n, i in enumerate(sL):
 		wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
 			wk.update_cell(n+1, m+2, 'S'+str(m+1)+'E'+str(j.episodes)+' ('+j.year+')')
+			print(n,m)
 	sh.del_worksheet(sh.worksheet('Shows'))
 	wk.update_title(title='Shows')
 
@@ -155,9 +157,10 @@ def main(argv):
 	fL = films()
 	sL = shows()
 	writeXLSX(fL, sL)
-	gsheets(fL, sL)
+	gsheets(mainDir, fL, sL)
 	print(len(fL), 'movies,', len(sL), 'shows')
 	input("Press Enter to exit...")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
+##        print(sys.argv[1:])
