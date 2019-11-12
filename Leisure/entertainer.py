@@ -131,6 +131,12 @@ def gsheets(mainDir, fL, sL):
 	gc = gspread.authorize(credentials)
 
 	sh = gc.open('Entertainment')
+	lst = sh.worksheets()
+	if 'Movies.temp' in lst:
+		sh.del_worksheet(sh.worksheet('Movies.temp'))
+	if 'Shows.temp' in lst:
+		sh.del_worksheet(sh.worksheet('Shows.temp'))
+
 	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
 	name_range = wk.range('A1:A'+str(len(fL)))
 	year_range = wk.range('B1:B'+str(len(fL)))
