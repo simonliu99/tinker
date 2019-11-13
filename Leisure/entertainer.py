@@ -171,7 +171,7 @@ def main(argv):
 	writeXLSX(fL, sL)
 	gsheets(mainDir, fL, sL)
 	print(len(fL), 'movies,', len(sL), 'shows')
-	input("Press Enter to exit...")
+##	input("Press Enter to exit...")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
