@@ -17,13 +17,13 @@ class show(object):
 	seasons = []
 
 def formats(b, color):
-    font = b.add_format({'font_name': 'Courier', 'font_size': 12})
-    center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
-    if color == '':
-        return font, center
-    cFont = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
-    cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
-    return cFont, cFontC
+	font = b.add_format({'font_name': 'Courier', 'font_size': 12})
+	center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
+	if color == '':
+		return font, center
+	cFont = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
+	cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
+	return cFont, cFontC
 
 def makeNewFilm(curDir, dirName, sub):
 	dNs = dirName.split()
@@ -95,42 +95,42 @@ def dirFix():
 	os.chdir(curDir)
 
 def nameFix():
-        MOVIE_EXT = ['mp4', 'mkv', 'avi']
-        SUB_EXT = ['sub', 'srt', 'idx', 'smi']
-        curDir = os.getcwd()
-        filmDir = os.path.join(curDir, 'Films')
-        filmsExisting = os.listdir(filmDir)
-        holdDir = os.path.join(curDir, 'Holding')
+		MOVIE_EXT = ['mp4', 'mkv', 'avi']
+		SUB_EXT = ['sub', 'srt', 'idx', 'smi']
+		curDir = os.getcwd()
+		# filmDir = os.path.join(curDir, 'Films')
+		# filmsExisting = os.listdir(filmDir)
+		holdDir = os.path.join(curDir, 'Holding')
 
-        for i in os.listdir(holdDir):
-                path = os.path.join(holdDir, i)
-                contents = os.listdir(path)
-                film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
-                subs = [k for k in contents if k.split('.')[-1] in SUB_EXT]
-                dirs = [l for l in contents if os.path.isdir(os.path.join(path, l))]
-                if dirs : print('EXTRANEOUS FOLDERS IN', path)
-                if len(contents) > len(film) + len(subs) : print('EXTRANEOUS FILES IN', path)
-                if len(film) > 1:
-                        print('MORE THAN ONE MOVIE FILE IN', path)
-                        continue
-                elif not film:
-                        print('NO MOVIE FILE FOUND IN', path)
-                        continue
-                film_ext = '.' + film[0].split('.')[-1]
-                os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
-                print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+		for i in os.listdir(holdDir):
+				path = os.path.join(holdDir, i)
+				contents = os.listdir(path)
+				film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
+				subs = [k for k in contents if k.split('.')[-1] in SUB_EXT]
+				dirs = [l for l in contents if os.path.isdir(os.path.join(path, l))]
+				if dirs : print('EXTRANEOUS FOLDERS IN', path)
+				if len(contents) > len(film) + len(subs) : print('EXTRANEOUS FILES IN', path)
+				if len(film) > 1:
+						print('MORE THAN ONE MOVIE FILE IN', path)
+						continue
+				elif not film:
+						print('NO MOVIE FILE FOUND IN', path)
+						continue
+				film_ext = '.' + film[0].split('.')[-1]
+				os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+				print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
 
-                if len(subs) > 1:
-                        print('MORE THAN ONE SUBTITLE FILE IN', path)
-                        continue
-                elif not subs:
-                        #print('NO SUBTITLE FOR', path)
-                        continue
-                subs_ext = '.' + subs[0].split('.')[-1]
-                os.rename(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
+				if len(subs) > 1:
+						print('MORE THAN ONE SUBTITLE FILE IN', path)
+						continue
+				elif not subs:
+						#print('NO SUBTITLE FOR', path)
+						continue
+				subs_ext = '.' + subs[0].split('.')[-1]
+				os.rename(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
 
-                #print(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
-                #print(path)
+				#print(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
+				#print(path)
 
 ##        print(dir[0])
 ##        print(os.listdir(os.path.join(filmDir, dir[0])))
@@ -155,15 +155,15 @@ def nameFix():
 ##                                os.remove(os.path.join(path, i))
 
 def films():
-        SUB_EXT = ['sub', 'srt', 'idx', 'smi']
-        curDir = os.path.join(os.getcwd(), 'Films')
-        dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
-        fList = []
-        for f in dirList:
-                sub = True if [k for k in os.listdir(os.path.join(curDir, f)) if k.split('.')[-1] in SUB_EXT] else False
-                fList.append(makeNewFilm(curDir, f, sub))
-        fList.sort(key=lambda f:f.name)
-        return fList
+		SUB_EXT = ['sub', 'srt', 'idx', 'smi']
+		curDir = os.path.join(os.getcwd(), 'Films')
+		dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
+		fList = []
+		for f in dirList:
+				sub = True if [k for k in os.listdir(os.path.join(curDir, f)) if k.split('.')[-1] in SUB_EXT] else False
+				fList.append(makeNewFilm(curDir, f, sub))
+		fList.sort(key=lambda f:f.name)
+		return fList
 
 def shows():
 	curDir = os.path.join(os.getcwd(), 'Shows')
@@ -177,17 +177,17 @@ def shows():
 	return sList
 
 def gsheets(mainDir, fL, sL):
+	# connect to Google Drive
 	scope = ['https://spreadsheets.google.com/feeds',
 			 'https://www.googleapis.com/auth/drive']
-
 	credentials = ServiceAccountCredentials.from_json_keyfile_name(mainDir+'\client_secret.json', scope)
-
 	gc = gspread.authorize(credentials)
 
+	# initialize sheet and remove temp sheets
 	sh = gc.open('Entertainment')
 	lst = sh.worksheets()
 	try:
-		sh.del_worksheet(sh.worksheet('Movies.temp'))
+		sh.del_worksheet(sh.worksheet('Films.temp'))
 	except:
 		pass
 	try:
@@ -195,27 +195,39 @@ def gsheets(mainDir, fL, sL):
 	except:
 		pass
 
-	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
-	name_range = wk.range('A1:A'+str(len(fL)))
-	year_range = wk.range('B1:B'+str(len(fL)))
-	subs_range = wk.range('C1:C'+str(len(fL)))
+	# parse films
+	frows = len(fL)
+	wk = sh.add_worksheet(title='Films.temp', rows=frows, cols=2)
+	name_range = wk.range('A1:A'+str(frows))
+	year_range = wk.range('B1:B'+str(frows))
+	# subs_range = wk.range('C1:C'+str(rows))
 	#for i in range(len(fL)):
 	for n, i in enumerate(fL):
-	    name_range[n].value = i.name
-	    year_range[n].value = i.year
-	    if i.subs: subs_range[n].value = 'Subbed'
-	    print(i.name, i.year, i.subs)
-	wk.update_cells(name_range)
-	wk.update_cells(year_range)
-	wk.update_cells(subs_range)
-	sh.del_worksheet(sh.worksheet('Movies'))
-	wk.update_title(title='Movies')
+		name_range[n].value = i.name
+		year_range[n].value = i.year
+		# if i.subs: subs_range[n].value = 'Subbed'
+		# print(i.name, i.year, i.subs)
+	# wk.update_cells(name_range)
+	# wk.update_cells(year_range)
+	wk.update(name_range)
+	wk.update(year_range)
+	# wk.batch_update([name_range, year_range])
+	# wk.update_cells(subs_range)
+	sh.del_worksheet(sh.worksheet('Films'))
+	wk.update_title(title='Films')
 
-	wk = sh.add_worksheet(title='Shows.temp', rows=1000, cols=26)
+	# parse shows
+	srows = len(sL)
+	wk = sh.add_worksheet(title='Shows.temp', rows=srows, cols=26)
 	for n, i in enumerate(sL):
-		wk.update_cell(n+1, 1, i.name)
+		row = chr(n+65)
+		range = wk.range(row+'1:'+row+str(len(i.seasons)))
+		range[0].value = i.name
+		# wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
-			wk.update_cell(n+1, m+2, j)
+			range[m+1] = j
+			# wk.update_cell(n+1, m+2, j)
+		wk.update(range)
 	sh.del_worksheet(sh.worksheet('Shows'))
 	wk.update_title(title='Shows')
 
@@ -234,10 +246,10 @@ def main(argv):
 ##	input("Press Enter to exit...")
 
 def test(argv):
-        mainDir = argv[0]
-        os.chdir(mainDir)
-        print(mainDir)
-        filmNameFix()
+		mainDir = argv[0]
+		os.chdir(mainDir)
+		print(mainDir)
+		filmNameFix()
 
 if __name__ == "__main__":
-        main(sys.argv[1:])
+		main(sys.argv[1:])
