@@ -225,7 +225,7 @@ def gsheets(mainDir, fL, sL):
 		range[0].value = i.name
 		# wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
-			range[m+1] = j
+			range[m+1].value = j
 			# wk.update_cell(n+1, m+2, j)
 		wk.update_cells(range)
 	sh.del_worksheet(sh.worksheet('Shows'))
