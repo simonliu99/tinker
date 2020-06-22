@@ -9,6 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 class film(object):
 	name = ''
 	year = 0
+	subs = False
 	# broke = False
 
 class show(object):
@@ -24,12 +25,12 @@ def formats(b, color):
     cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
     return cFont, cFontC
 
-def makeNewFilm(curDir, dirName):
+def makeNewFilm(curDir, dirName, sub):
 	dNs = dirName.split()
 	f = film()
 	f.year = int(dNs.pop()[1:5])
 	f.name = ' '.join(dNs)
-	f.status = dirStatus(curDir, dirName)
+	f.subs = sub
 	return f
 
 def makeNewShow(dirName, seasons):
@@ -38,24 +39,15 @@ def makeNewShow(dirName, seasons):
 	s.seasons = seasons
 	return s
 
-def dirStatus(curDir, dirName):
-	if os.listdir(os.path.join(curDir, dirName)) == []:
-		return 'red'
-	for dirpath, dirnames, filenames in os.walk(os.path.join(curDir, dirName)):
-		for filename in filenames:
-			if not filename.endswith('mp4') and not filename.endswith('mkv') and not filename.endswith('srt') and not filename.endswith('_Sub') and not filename.endswith('avi') and not filename.endswith('idx') and not filename.endswith('_Subs') and not filename.endswith('sub') and not filename.endswith('_Subtitles') and not filename.endswith('smi'):
-				return 'yellow'
-	return ''
-
 def writeXLSX(fL, sL):
 	book = xlsxwriter.Workbook('Entertainment.xlsx')
 
 	films = book.add_worksheet('Films')
 	maxLen = 0
 	for i, f in enumerate(fL):
-		form, formC = formats(book, f.status)
-		films.write(i, 0, f.name, form)
-		films.write(i, 1, f.year, formC)
+		films.write(i, 0, f.name)
+		films.write(i, 1, f.year)
+		if f.subs: films.write(i, 2, 'Sub')
 		maxLen = len(f.name) if len(f.name) > maxLen else maxLen
 	films.set_column(0, 0, maxLen + 12)
 
@@ -95,21 +87,83 @@ def dirFix():
 			print('ERROR: Film already exists', i)
 		else:
 			try:
-				# print('SUCCESS', clean)
+				print(clean)
 				os.rename(i, clean)
 				shutil.move(clean, filmDir)
 			except:
 				print('ERROR: Could not rename', i)
 	os.chdir(curDir)
 
+def nameFix():
+        MOVIE_EXT = ['mp4', 'mkv', 'avi']
+        SUB_EXT = ['sub', 'srt', 'idx', 'smi']
+        curDir = os.getcwd()
+        filmDir = os.path.join(curDir, 'Films')
+        filmsExisting = os.listdir(filmDir)
+        holdDir = os.path.join(curDir, 'Holding')
+
+        for i in os.listdir(holdDir):
+                path = os.path.join(holdDir, i)
+                contents = os.listdir(path)
+                film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
+                subs = [k for k in contents if k.split('.')[-1] in SUB_EXT]
+                dirs = [l for l in contents if os.path.isdir(os.path.join(path, l))]
+                if dirs : print('EXTRANEOUS FOLDERS IN', path)
+                if len(contents) > len(film) + len(subs) : print('EXTRANEOUS FILES IN', path)
+                if len(film) > 1:
+                        print('MORE THAN ONE MOVIE FILE IN', path)
+                        continue
+                elif not film:
+                        print('NO MOVIE FILE FOUND IN', path)
+                        continue
+                film_ext = '.' + film[0].split('.')[-1]
+                os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+                print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+
+                if len(subs) > 1:
+                        print('MORE THAN ONE SUBTITLE FILE IN', path)
+                        continue
+                elif not subs:
+                        #print('NO SUBTITLE FOR', path)
+                        continue
+                subs_ext = '.' + subs[0].split('.')[-1]
+                os.rename(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
+
+                #print(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
+                #print(path)
+
+##        print(dir[0])
+##        print(os.listdir(os.path.join(filmDir, dir[0])))
+##        dir2 = os.listdir(os.path.join(filmDir, dir[0]))
+##        os.rename(os.path.join(os.path.join(filmDir, dir[0]), dir2[0]), os.path.join(os.path.join(filmDir, dir[0]), dir[0] + '.mp4'))
+##        for path, subdirs, files in os.walk(os.getcwd()):
+##                for i in files:
+##                        ext = i.split('.')[-1]
+##                        if ext in ['mp4', 'mkv', 'avi']:
+##                                #print(os.path.join(path, i))
+##                                print(path.split(os.sep)[-1])
+##                                #os.rename(os.path.join(path, i), os.path.join(path, path.split(os.sep)[-1]))
+##                                #continue
+##                        elif ext == 'jpg':
+##                                print('image', os.path.join(path, i))
+##                                os.remove(os.path.join(path, i))
+##                        elif ext in ['sub', 'srt', 'idx', 'smi']:
+##                                #print('subs', os.path.join(path, i))
+##                                continue
+##                        else:
+##                                print('other', os.path.join(path, i))
+##                                os.remove(os.path.join(path, i))
+
 def films():
-	curDir = os.path.join(os.getcwd(), 'Films')
-	dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
-	fList = []
-	for f in dirList:
-		fList.append(makeNewFilm(curDir, f))
-	fList.sort(key=lambda f:f.name)
-	return fList
+        SUB_EXT = ['sub', 'srt', 'idx', 'smi']
+        curDir = os.path.join(os.getcwd(), 'Films')
+        dirList = [d for d in os.listdir(curDir) if os.path.isdir(os.path.join(curDir, d))]
+        fList = []
+        for f in dirList:
+                sub = True if [k for k in os.listdir(os.path.join(curDir, f)) if k.split('.')[-1] in SUB_EXT] else False
+                fList.append(makeNewFilm(curDir, f, sub))
+        fList.sort(key=lambda f:f.name)
+        return fList
 
 def shows():
 	curDir = os.path.join(os.getcwd(), 'Shows')
@@ -135,20 +189,25 @@ def gsheets(mainDir, fL, sL):
 	try:
 		sh.del_worksheet(sh.worksheet('Movies.temp'))
 	except:
-                pass
+		pass
 	try:
 		sh.del_worksheet(sh.worksheet('Shows.temp'))
 	except:
-                pass
+		pass
 
 	wk = sh.add_worksheet(title='Movies.temp', rows=1000, cols=26)
 	name_range = wk.range('A1:A'+str(len(fL)))
 	year_range = wk.range('B1:B'+str(len(fL)))
-	for i in range(len(fL)):
-		name_range[i].value = fL[i].name
-		year_range[i].value = fL[i].year
+	subs_range = wk.range('C1:C'+str(len(fL)))
+	#for i in range(len(fL)):
+	for n, i in enumerate(fL):
+	    name_range[n].value = i.name
+	    year_range[n].value = i.year
+	    if i.subs: subs_range[n].value = 'Subbed'
+	    print(i.name, i.year, i.subs)
 	wk.update_cells(name_range)
 	wk.update_cells(year_range)
+	wk.update_cells(subs_range)
 	sh.del_worksheet(sh.worksheet('Movies'))
 	wk.update_title(title='Movies')
 
@@ -166,6 +225,7 @@ def main(argv):
 	os.chdir(mainDir)
 	print(mainDir)
 	dirFix()
+	nameFix()
 	fL = films()
 	sL = shows()
 	writeXLSX(fL, sL)
@@ -173,5 +233,11 @@ def main(argv):
 	print(len(fL), 'movies,', len(sL), 'shows')
 ##	input("Press Enter to exit...")
 
+def test(argv):
+        mainDir = argv[0]
+        os.chdir(mainDir)
+        print(mainDir)
+        filmNameFix()
+
 if __name__ == "__main__":
-	main(sys.argv[1:])
+        main(sys.argv[1:])
