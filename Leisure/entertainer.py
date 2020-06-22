@@ -223,8 +223,7 @@ def gsheets(mainDir, fL, sL):
 	srows = len(sL)
 	wk = sh.add_worksheet(title='Shows.temp', rows=srows, cols=26)
 	for n, i in enumerate(sL):
-		row = chr(n+65)
-		range = wk.range(row+'1:'+row+str(len(i.seasons)+1))
+		range = wk.range('A'+str(n+1)+':Z'+str(n+1))
 		range[0].value = i.name
 		# wk.update_cell(n+1, 1, i.name)
 		for m, j in enumerate(i.seasons):
