@@ -207,10 +207,10 @@ def gsheets(mainDir, fL, sL):
 		year_range[n].value = i.year
 		# if i.subs: subs_range[n].value = 'Subbed'
 		# print(i.name, i.year, i.subs)
-	# wk.update_cells(name_range)
-	# wk.update_cells(year_range)
-	wk.update(name_range)
-	wk.update(year_range)
+	wk.update_cells(name_range)
+	wk.update_cells(year_range)
+	# wk.update(name_range)
+	# wk.update(year_range)
 	# wk.batch_update([name_range, year_range])
 	# wk.update_cells(subs_range)
 	sh.del_worksheet(sh.worksheet('Films'))
@@ -227,7 +227,7 @@ def gsheets(mainDir, fL, sL):
 		for m, j in enumerate(i.seasons):
 			range[m+1] = j
 			# wk.update_cell(n+1, m+2, j)
-		wk.update(range)
+		wk.update_cells(range)
 	sh.del_worksheet(sh.worksheet('Shows'))
 	wk.update_title(title='Shows')
 
