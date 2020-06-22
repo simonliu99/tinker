@@ -213,7 +213,10 @@ def gsheets(mainDir, fL, sL):
 	# wk.update(year_range)
 	# wk.batch_update([name_range, year_range])
 	# wk.update_cells(subs_range)
-	sh.del_worksheet(sh.worksheet('Films'))
+	try:
+		sh.del_worksheet(sh.worksheet('Films'))
+	except:
+		pass
 	wk.update_title(title='Films')
 
 	# parse shows
@@ -228,7 +231,10 @@ def gsheets(mainDir, fL, sL):
 			range[m+1].value = j
 			# wk.update_cell(n+1, m+2, j)
 		wk.update_cells(range)
-	sh.del_worksheet(sh.worksheet('Shows'))
+	try:
+		sh.del_worksheet(sh.worksheet('Shows'))
+	except:
+		pass
 	wk.update_title(title='Shows')
 
 def main(argv):
