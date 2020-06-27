@@ -97,6 +97,7 @@ def dirFix():
 def nameFix():
 		MOVIE_EXT = ['mp4', 'mkv', 'avi']
 		SUB_EXT = ['sub', 'srt', 'idx', 'smi']
+		REMOVE_EXT = ['ds_store', 'jpg']
 		curDir = os.getcwd()
 		# TODO: check existing films for name fixes too
 		filmDir = os.path.join(curDir, 'Films')
@@ -105,21 +106,20 @@ def nameFix():
 
 		for i in os.listdir(filmDir):
 				if i == '.DS_Store':
-					print('.DS_Store present')
+					print('WILL REMOVE .DS_Store')
 					continue
 				path = os.path.join(filmDir, i)
 				contents = os.listdir(path)
-				film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
-				subs = [k for k in contents if k.split('.')[-1] in SUB_EXT]
+				film = [j for j in contents if j.split('.')[-1].lower() in MOVIE_EXT]
+				subs = [k for k in contents if k.split('.')[-1].lower() in SUB_EXT]
 				dirs = [l for l in contents if os.path.isdir(os.path.join(path, l))]
 				if dirs : print('EXTRANEOUS FOLDERS IN', path)
 				if len(contents) > len(film) + len(subs):
 					print('EXTRANEOUS FILES IN', path)
-					for i in contents:
-						if i == '.DS_Store':
-							print('.DS_Store present')
-						elif i.split('.')[-1] == 'jpg':
-							print('JPG present')
+					for j in contents:
+						if j.split('.').lower() in REMOVE_EXT:
+							print('WILL REMOVE', j)
+							# os.remove(os.path.join(filmDir, i))
 				if len(film) > 1:
 						print('MORE THAN ONE MOVIE FILE IN', path)
 						continue
