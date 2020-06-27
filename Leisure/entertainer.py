@@ -117,7 +117,7 @@ def nameFix():
 				if len(contents) > len(film) + len(subs):
 					print('EXTRANEOUS FILES IN', path)
 					for j in contents:
-						if j.split('.').lower() in REMOVE_EXT:
+						if j.split('.')[-1].lower() in REMOVE_EXT:
 							print('WILL REMOVE', j)
 							# os.remove(os.path.join(filmDir, i))
 				if len(film) > 1:
