@@ -98,18 +98,25 @@ def nameFix():
 		MOVIE_EXT = ['mp4', 'mkv', 'avi']
 		SUB_EXT = ['sub', 'srt', 'idx', 'smi']
 		curDir = os.getcwd()
-		# filmDir = os.path.join(curDir, 'Films')
+		# TODO: check existing films for name fixes too
+		filmDir = os.path.join(curDir, 'Films')
 		# filmsExisting = os.listdir(filmDir)
 		holdDir = os.path.join(curDir, 'Holding')
 
-		for i in os.listdir(holdDir):
-				path = os.path.join(holdDir, i)
+		for i in os.listdir(filmDir):
+				path = os.path.join(filmDir, i)
 				contents = os.listdir(path)
 				film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
 				subs = [k for k in contents if k.split('.')[-1] in SUB_EXT]
 				dirs = [l for l in contents if os.path.isdir(os.path.join(path, l))]
 				if dirs : print('EXTRANEOUS FOLDERS IN', path)
-				if len(contents) > len(film) + len(subs) : print('EXTRANEOUS FILES IN', path)
+				if len(contents) > len(film) + len(subs):
+					print('EXTRANEOUS FILES IN', path)
+					for i in contents:
+						if i == '.DS_Store':
+							print('.DS_Store present')
+						elif i.split('.')[-1] == 'jpg':
+							print('JPG present')
 				if len(film) > 1:
 						print('MORE THAN ONE MOVIE FILE IN', path)
 						continue
@@ -117,7 +124,8 @@ def nameFix():
 						print('NO MOVIE FILE FOUND IN', path)
 						continue
 				film_ext = '.' + film[0].split('.')[-1]
-				os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+				if film[0] != i + film_ext:
+					os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
 				print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
 
 				if len(subs) > 1:
@@ -127,7 +135,8 @@ def nameFix():
 						#print('NO SUBTITLE FOR', path)
 						continue
 				subs_ext = '.' + subs[0].split('.')[-1]
-				os.rename(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
+				if subs[0] != i + '.en' + subs_ext:
+					os.rename(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
 
 				#print(os.path.join(path, subs[0]), os.path.join(path, i + '.en' + subs_ext))
 				#print(path)
