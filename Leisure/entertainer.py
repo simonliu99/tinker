@@ -106,6 +106,7 @@ def nameFix():
 
 		for i in os.listdir(filmDir):
 				if i == '.DS_Store':
+					os.remove(os.path.join(filmDir, i))
 					print('WILL REMOVE .DS_Store')
 					continue
 				path = os.path.join(filmDir, i)
@@ -116,10 +117,10 @@ def nameFix():
 				if dirs : print('EXTRANEOUS FOLDERS IN', path)
 				if len(contents) > len(film) + len(subs):
 					print('EXTRANEOUS FILES IN', path)
-					for j in contents:
-						if j.split('.')[-1].lower() in REMOVE_EXT:
-							print('WILL REMOVE', j)
-							# os.remove(os.path.join(filmDir, i))
+					for m in contents:
+						if m.split('.')[-1].lower() in REMOVE_EXT:
+							os.remove(os.path.join(path, m))
+							print('REMOVED', os.path.join(path, m))
 				if len(film) > 1:
 						print('MORE THAN ONE MOVIE FILE IN', path)
 						continue
