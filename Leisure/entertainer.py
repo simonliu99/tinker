@@ -104,6 +104,9 @@ def nameFix():
 		holdDir = os.path.join(curDir, 'Holding')
 
 		for i in os.listdir(filmDir):
+				if i == '.DS_Store':
+					print('.DS_Store present')
+					continue
 				path = os.path.join(filmDir, i)
 				contents = os.listdir(path)
 				film = [j for j in contents if j.split('.')[-1] in MOVIE_EXT]
