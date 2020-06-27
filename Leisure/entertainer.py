@@ -129,7 +129,7 @@ def nameFix():
 				film_ext = '.' + film[0].split('.')[-1]
 				if film[0] != i + film_ext:
 					os.rename(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
-				print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
+				# print(os.path.join(path, film[0]), os.path.join(path, i + film_ext))
 
 				if len(subs) > 1:
 						print('MORE THAN ONE SUBTITLE FILE IN', path)
