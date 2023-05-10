@@ -1,46 +1,60 @@
 import os
 import xlsxwriter
+from shutil import copyfile
 
 class film(object):
     name = ''
     year = 0
-    broke = False
+    subtitles = False
+    status = False
 
 class show(object):
     name = ''
     seasons = []
+    subtitles = False
+    status = False
 
-def formats(b, color):
-    font = b.add_format({'font_name': 'Courier', 'font_size': 12})
-    center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
-    if color == '':
-        return font, center
-    cFont = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
-    cFontC = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
-    return cFont, cFontC
+def formats(b, subs, stat):
+    if subs and stat:
+        font = b.add_format({'font_name': 'Courier', 'font_size': 12})
+        center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center'})
+    else:
+        color = ''
+        if not stat:
+            color = 'red'
+        elif not subs:
+            color = 'yellow'
+        font = b.add_format({'font_name': 'Courier', 'font_size': 12, 'bg_color': color})
+        center = b.add_format({'font_name': 'Courier', 'font_size': 12, 'align': 'center', 'bg_color': color})
+    return font, center
 
 def makeNewFilm(curDir, dirName):
     dNs = dirName.split()
     f = film()
     f.year = int(dNs.pop()[1:5])
     f.name = ' '.join(dNs)
-    f.status = dirStatus(curDir, dirName)
+    f.subtitles, f.status = dirStatus(curDir, dirName)
     return f
 
-def makeNewShow(dirName, seasons):
+def makeNewShow(curDir, dirName, seasons):
     s = show()
     s.name = dirName
     s.seasons = seasons
+    s.subtitles, s.status = dirStatus(curDir, dirName)
     return s
 
 def dirStatus(curDir, dirName):
+    subs = False
+    stat = False
     if os.listdir(os.path.join(curDir, dirName)) == []:
-        return 'red'
+        return subs, stat
     for dirpath, dirnames, filenames in os.walk(os.path.join(curDir, dirName)):
         for filename in filenames:
-            if not filename.endswith('mp4') and not filename.endswith('mkv') and not filename.endswith('srt') and not filename.endswith('_Sub') and not filename.endswith('avi') and not filename.endswith('idx') and not filename.endswith('_Subs') and not filename.endswith('sub') and not filename.endswith('_Subtitles') and not filename.endswith('smi'):
-                return 'yellow'
-    return ''
+            if filename.endswith('mp4') or filename.endswith('mkv') or filename.endswith('avi'):
+                stat = True
+            elif filename.endswith('srt') or filename.endswith('_Sub') or filename.endswith('idx') or filename.endswith('_Subs') or filename.endswith('sub') or filename.endswith('_Subtitles') or filename.endswith('smi'):
+                subs = True
+    return subs, stat
 
 def writeXLSX(fL, sL):
     book = xlsxwriter.Workbook('Entertainment.xlsx')
@@ -48,17 +62,20 @@ def writeXLSX(fL, sL):
     films = book.add_worksheet('Films')
     maxLen = 0
     for i, f in enumerate(fL):
-        form, formC = formats(book, f.status)
+        #form, formC = formats(book, f.subtitles, f.status)
+        form, formC = formats(book, True, True)
         films.write(i, 0, f.name, form)
         films.write(i, 1, f.year, formC)
+        films.write(i, 2, str(f.subtitles), formC)
+        films.write(i, 3, str(f.status), formC)
         maxLen = len(f.name) if len(f.name) > maxLen else maxLen
     films.set_column(0, 0, maxLen + 12)
 
     shows = book.add_worksheet('Shows')
     maxLen = 0
     maxSeason = 0
-    form, formC = formats(book, '')
     for j, s in enumerate(sL):
+        form, formC = formats(book, True, True)
         shows.write(j, 0, s.name, form)
         maxLen = len(s.name) if len(s.name) > maxLen else maxLen
         for k, n in enumerate(s.seasons):
@@ -105,18 +122,20 @@ def shows(mD):
     for s in dirList:
         curSub = os.path.join(curDir, s)
         subList = [u for u in os.listdir(curSub) if os.path.isdir(os.path.join(curSub, u))]
-        sList.append(makeNewShow(s, subList))
+        sList.append(makeNewShow(curDir, s, subList))
     sList.sort(key=lambda s:s.name)
-    return sList
+    return sList    
 
 def main():
-    os.chdir('/Volumes/Alpha/Entertainment')
+    os.chdir('/Volumes/Syzygy/Leisure/Entertainment')
+##    os.chdir('/Users/michaelblob/Movies')
     mainDir = os.getcwd()
     print(mainDir)
     dirFix(mainDir)
     fL = films(mainDir)
     sL = shows(mainDir)
     writeXLSX(fL, sL)
+    copyfile("/Volumes/Syzygy/Leisure/Entertainment/Entertainment.xlsx", "/Users/michaelblob/Documents/JHU/Entertainment.xlsx")
     print(len(fL), 'movies,', len(sL), 'shows')
     #input("Press Enter to exit...")
 

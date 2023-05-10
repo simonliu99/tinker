@@ -9,7 +9,7 @@ ri = [1.375177282, 1.379726782, 1.384001458, 1.388024636, 1.391817202, 1.3953978
 
 % begin script
 [phi,ax,ay,bx,by] = initImg(y,width2,height2,width3,height3);
-[theta2,focallen] = initAng(theta1,ri,phi);
+[dC, riG, theta2,focallen] = initAng(theta1,ri,phi);
 focallenM = zeros(8,8);
 for i = 1:8
     for j = 1:8
@@ -44,7 +44,7 @@ end
 end
 
 % calculate values and plot with mesh on plot of fl vs dC and ri
-function [theta2,flFlat] = initAng(theta1,ri,ang)
+function [dC, riG, theta2,flFlatNorm] = initAng(theta1,ri,ang)
 theta2 = zeros(8,8);
 flFlat = zeros(1,64);
 for i = 1:8
@@ -97,7 +97,7 @@ mesh(xq,yq,vq)
 hold on
 plot3((dC),riG,model(),'o');
 xlim([0.16 6.25])
-zlim([0 6.14])
+zlim([2.87 3.1])
 xlabel('Curvature (cm^-^1)')
 ylabel('Refractive Index')
 zlabel('Focal Length (cm)')
